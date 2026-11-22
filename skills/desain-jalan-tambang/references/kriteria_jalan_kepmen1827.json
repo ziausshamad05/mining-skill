@@ -1,0 +1,28 @@
+{
+  "_sumber": "Keputusan Menteri ESDM Nomor 1827 K/30/MEM/2018 tentang Pedoman Pelaksanaan Kaidah Teknik Pertambangan yang Baik, Lampiran (keselamatan pertambangan - jalan pertambangan), hal. 99-100; perencanaan pengangkutan hal. 66-67. Unduh: https://jdih.esdm.go.id/storage/document/Keputusan%20Menteri%20ESDM%20Nomor%201827%20K%2030%20MEM%202018.pdf",
+  "_catatan": "Nilai di bawah adalah ambang minimum/maksimum regulasi. Kepmen tidak memberi angka radius, superelevasi, jarak pandang, dan dimensi saluran; nilai itu dihitung dengan metode AASHTO (Green Book) / Kaufman & Ault (US Bureau of Mines IC 8758) dan ditandai sebagai 'praktik rekayasa'.",
+  "lebar_jalan_dua_jalur_min_x_lebar_unit": 3.5,
+  "lebar_jalan_satu_jalur_min_x_lebar_unit": 2.0,
+  "tanggul_pengaman_min_x_diameter_roda": 0.75,
+  "tanggul_tidak_wajib_boxcut": true,
+  "kemiringan_melintang_min": 0.02,
+  "grade_maks": 0.12,
+  "grade_di_atas_maks_wajib_kajian_teknis": true,
+  "separator_tinggi_min_x_diameter_roda": 0.5,
+  "separator_lebar_atas_min_x_lebar_roda": 1.0,
+  "sudut_persimpangan_tiga_min_deg": 70.0,
+  "kapasitas_jalan_min_x_laju_produksi": 1.25,
+  "pasal": {
+    "lebar": "hal. 99 butir (i): lebar jalan angkut dua jalur paling kurang 3,5 kali lebar unit terbesar; satu jalur paling kurang 2 kali; berlaku juga untuk jembatan",
+    "tanggul": "hal. 99 butir (ii): tanggul pengaman paling kurang 3/4 diameter roda unit terbesar; (iii) jalan boxcut dapat tanpa tanggul",
+    "drainase": "hal. 99 butir (v): penyaliran mampu mengalirkan debit limpasan tertinggi dan dirawat",
+    "cross_fall": "hal. 99 butir (vi): kemiringan melintang paling kurang 2%",
+    "grade": "hal. 99 butir (vii): kemiringan jalan tidak lebih dari 12% dengan memperhatikan kemampuan alat angkut, material jalan, dan rasio bahan bakar",
+    "grade_kajian": "hal. 100 butir (viii): kemiringan di atas 12% wajib kajian teknis (risiko, spesifikasi alat, spesifikasi jalan)",
+    "tikungan": "hal. 100 butir (ix): lebar, radius, dan superelevasi tikungan mampu menahan gaya kendaraan pada batas kecepatan yang ditetapkan",
+    "daya_dukung": "hal. 100 butir (xi): daya dukung jalan melebihi beban statis unit terbesar bermuatan",
+    "separator": "hal. 100 butir (xii): separator di tikungan/persimpangan tinggi paling kurang 1/2 diameter roda terbesar, lebar atas paling kurang lebar roda terbesar",
+    "persimpangan": "hal. 100 butir (xiii): sudut persimpangan tiga tidak kurang dari 70 derajat",
+    "kapasitas": "hal. 67: kapasitas pengangkutan pada jalan paling kurang ditambah 25% dari laju produksi"
+  }
+}

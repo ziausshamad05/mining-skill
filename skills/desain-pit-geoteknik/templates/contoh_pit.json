@@ -1,0 +1,40 @@
+{
+  "proyek": "Pit A - Desain Akhir",
+  "perusahaan": "PT. Surya Saga Utama",
+  "epsg": 32751,
+  "block_model": {
+    "sumber": "block_model.csv",
+    "kolom": {"x": "XC", "y": "YC", "z": "ZC", "kadar": "NI", "densitas": "SG"},
+    "ukuran_blok": [10.0, 10.0, 5.0]
+  },
+  "topografi": {"sumber": "topografi.xml", "nama_surface": "EG"},
+  "ekonomi": {
+    "harga_per_ton_logam": 9000.0,
+    "satuan_kadar": "%",
+    "recovery": 0.85,
+    "biaya_olah_per_ton": 18.0,
+    "biaya_tambang_per_ton": 2.5,
+    "biaya_tambahan_per_m_kedalaman": 0.01
+  },
+  "cutoff_kadar": null,
+  "geoteknik": {
+    "keparahan_longsor": "menengah",
+    "ru": 0.1,
+    "kh": 0.10,
+    "material": {"lapisan": [
+      {"nama": "zona lapuk", "z_atas": 1e9, "gamma": 18.5, "c": 40, "phi": 28, "sd_c": 8, "sd_phi": 2.5, "sd_gamma": 0.5},
+      {"nama": "batuan segar", "z_atas": 150, "gamma": 25.0, "c": 250, "phi": 38, "sd_c": 40, "sd_phi": 3.0, "sd_gamma": 0.5}
+    ]},
+    "optimasi": true,
+    "tinggi_jenjang": 10.0,
+    "sudut_muka_opsi": [50, 55, 60, 65, 70],
+    "berm_opsi": [5, 6, 7, 8, 10],
+    "n_monte_carlo": 600
+  },
+  "ramp": {"lebar_unit_m": 3.5, "jumlah_jalur": 2, "diameter_roda_m": 1.6, "grade": 0.10,
+           "azimut_awal_deg": 200, "arah": "ccw", "lebar_saluran_m": 1.0, "jumlah_akses": 2},
+  "dasar_pit_min_m": 30,
+  "jangkauan_alat_gali_m": 10.5,
+  "grid_permukaan_m": 2.5,
+  "penampang": [{"nama": "A-A'", "a": [0, 260], "b": [520, 260]}]
+}

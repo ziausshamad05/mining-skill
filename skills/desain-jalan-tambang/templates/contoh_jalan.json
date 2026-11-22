@@ -1,0 +1,37 @@
+{
+  "proyek": "Jalan Angkut Pit A - Stockpile ROM",
+  "perusahaan": "PT. Surya Saga Utama",
+  "epsg": 32751,
+  "alinyemen": {
+    "nama": "HR-PITA-ROM",
+    "pi": [[40, 60], [260, 110], [430, 70], [620, 260], [780, 520]],
+    "radius": [60, 50, 70],
+    "sta_awal": 0.0
+  },
+  "unit_terbesar": {
+    "nama": "ISI: model dump truck terbesar",
+    "lebar_m": 2.5,
+    "diameter_roda_m": 1.08,
+    "lebar_roda_m": 0.30,
+    "jarak_jejak_roda_m": 2.05,
+    "wheelbase_m": 4.6,
+    "juntai_depan_m": 1.4,
+    "juntai_belakang_m": 1.9,
+    "gvw_ton": 41.0,
+    "porsi_beban_gandar_belakang": 0.67,
+    "jumlah_roda_belakang": 8,
+    "tekanan_ban_kpa": 700,
+    "tinggi_mata_pengemudi_m": 2.4
+  },
+  "jumlah_jalur": 2,
+  "kecepatan_rencana_kmh": 30,
+  "grade_maks_desain": 0.10,
+  "superelevasi_maks": 0.05,
+  "kemiringan_melintang": 0.03,
+  "topografi": {"sumber": "demo"},
+  "profil": {"mode": "otomatis", "jarak_pvi_m": 80, "elev_awal": null, "elev_akhir": null},
+  "interval_penampang_m": 20,
+  "produksi_tph": 600,
+  "kapasitas_jalan_tph": 900,
+  "persimpangan_deg": [75]
+}
