@@ -1,0 +1,11 @@
+{
+  "name": "blok-data-mentah",
+  "target": "push",
+  "enforcement": "active",
+  "bypass_actors": [],
+  "rules": [
+    {"type": "file_path_restriction", "parameters": {"restricted_file_paths": ["data/raw/**", "**/*assay*.csv", "**/*collar*.csv", "**/*survey*.csv", "**/*.env", "**/secrets/**"]}},
+    {"type": "max_file_size", "parameters": {"max_file_size": 100}},
+    {"type": "file_extension_restriction", "parameters": {"restricted_file_extensions": [".pem", ".key", ".pfx", ".p12", ".kdbx"]}}
+  ]
+}

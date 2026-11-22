@@ -1,0 +1,42 @@
+# CI kualitas kode & keamanan data. Pin setiap action ke SHA commit sebelum dipakai di produksi.
+name: ci-kualitas
+on:
+  pull_request:
+  push:
+    branches: [main, staging]
+permissions:
+  contents: read
+jobs:
+  keamanan-data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0, lfs: false}
+      - name: Secret scan (gitleaks, seluruh riwayat)
+        run: |
+          docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:latest detect --source /repo --redact --exit-code 1
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Guard data sensitif (data pribadi, koordinat WIUP, kolom assay)
+        env:
+          WIUP_BBOX: ${{ secrets.WIUP_BBOX }}   # "xmin,ymin,xmax,ymax" UTM — disimpan sebagai secret
+        run: |
+          pip install pandas
+          git ls-files -z | xargs -0 python scripts/guard_data_sensitif.py --bbox-env WIUP_BBOX
+      - name: Larang file > 50 MB di luar LFS
+        run: |
+          git ls-files -z | xargs -0 -I{} sh -c 'f="{}"; [ -f "$f" ] && s=$(stat -c%s "$f") && [ "$s" -gt 52428800 ] && ! git check-attr filter -- "$f" | grep -q lfs && echo "BESAR: $f" && exit 1 || true'
+  uji:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12", cache: pip}
+      - run: pip install -r requirements.txt ruff pytest pytest-cov nbstripout
+      - name: Lint
+        run: ruff check .
+      - name: Notebook tanpa output
+        run: |
+          for nb in $(git ls-files '*.ipynb'); do nbstripout --verify "$nb"; done
+      - name: Unit test
+        run: pytest -q --cov=. --cov-report=term-missing

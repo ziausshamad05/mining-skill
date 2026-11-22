@@ -1,0 +1,24 @@
+# Data mentah & rahasia — tidak pernah di Git
+data/raw/
+data/asli/
+*_assay*.csv
+*_collar*.csv
+*_survey*.csv
+*.env
+.env*
+secrets/
+*.pem
+*.key
+# Hasil yang dibangun ulang oleh Actions
+reports/
+dist/
+laporan_qaqc/
+hasil*/
+# Proprietary besar (gunakan sistem dokumen; hanya hasil final via LFS bila perlu)
+*.dm
+*.bmf
+*.bdf
+# Lingkungan
+__pycache__/
+.venv/
+.ipynb_checkpoints/

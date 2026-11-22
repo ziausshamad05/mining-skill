@@ -1,0 +1,25 @@
+# pip install pre-commit && pre-commit install
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2          # perbarui ke rilis terbaru
+    hooks: [{id: gitleaks}]
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.8.1
+    hooks: [{id: nbstripout}]
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - {id: check-added-large-files, args: ["--maxkb=51200"]}
+      - {id: detect-private-key}
+      - {id: check-yaml}
+      - {id: end-of-file-fixer}
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.4
+    hooks: [{id: ruff}]
+  - repo: local
+    hooks:
+      - id: guard-data-sensitif
+        name: guard data sensitif (PDP, koordinat WIUP, assay)
+        entry: python scripts/guard_data_sensitif.py --bbox-env WIUP_BBOX
+        language: system
+        types_or: [text, csv, json, yaml, python, jupyter]

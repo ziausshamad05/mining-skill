@@ -1,0 +1,40 @@
+name: Permintaan Perubahan (MOC) — sistem kritis
+description: Manajemen perubahan SMKP untuk pemantauan lereng, alarm, FMS, collision avoidance, konfigurasi peledakan
+title: "[MOC] "
+labels: ["smkp:moc", "perlu-persetujuan-ktt"]
+body:
+  - type: dropdown
+    id: sistem
+    attributes:
+      label: Sistem terdampak
+      options: [Radar/prism pemantauan lereng, Piezometer/hidrogeologi, Ambang alarm geoteknik, Fleet management/dispatch, Collision avoidance/proximity, Konfigurasi peledakan, Lainnya]
+    validations: {required: true}
+  - type: textarea
+    id: alasan
+    attributes: {label: Alasan & uraian perubahan}
+    validations: {required: true}
+  - type: textarea
+    id: risiko
+    attributes:
+      label: Penilaian risiko (kemungkinan x keparahan, sebelum & sesudah pengendalian)
+      placeholder: "Bahaya: ...  Risiko awal: 3x4=12 (tinggi)  Pengendalian: ...  Risiko sisa: 2x2=4 (rendah)"
+    validations: {required: true}
+  - type: textarea
+    id: uji
+    attributes: {label: Rencana uji/simulasi sebelum go-live}
+    validations: {required: true}
+  - type: textarea
+    id: rollback
+    attributes: {label: Rencana rollback & waktu henti}
+    validations: {required: true}
+  - type: input
+    id: komunikasi
+    attributes: {label: Pihak yang harus diberitahu (shift, operator, pengawas)}
+  - type: checkboxes
+    id: setuju
+    attributes:
+      label: Persetujuan
+      options:
+        - label: Pemohon menyatakan data uraian benar
+          required: true
+        - label: Persetujuan KTT/PJO akan diberikan pada PR terkait dan Environment produksi

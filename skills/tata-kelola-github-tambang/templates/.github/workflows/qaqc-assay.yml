@@ -1,0 +1,38 @@
+# QA/QC assay: data sintetis di PR (GitHub-hosted), data asli terjadwal di runner self-hosted site (data tidak keluar jaringan).
+name: qaqc-assay
+on:
+  pull_request:
+    paths: ["qaqc/**", "config/qaqc.yml", "scripts/qaqc_assay.py"]
+  schedule:
+    - cron: "0 23 * * 0"   # Senin 07:00 WITA
+  workflow_dispatch:
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  qaqc-sintetis:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install pandas numpy matplotlib pyyaml
+      - run: python scripts/qaqc_assay.py --data data/sintetis/assay_qaqc.csv --config config/qaqc.yml --out laporan_qaqc
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: laporan-qaqc-sintetis, path: laporan_qaqc}
+      - name: Komentar ringkasan ke PR
+        if: always()
+        env: {GH_TOKEN: "${{ github.token }}"}
+        run: gh pr comment ${{ github.event.pull_request.number }} --body-file laporan_qaqc/ringkasan_pr.md
+  qaqc-produksi:
+    if: github.event_name != 'pull_request'
+    runs-on: [self-hosted, site, geologi]
+    environment: data-geologi        # secrets & reviewer di Environment
+    steps:
+      - uses: actions/checkout@v4
+      - run: python scripts/qaqc_assay.py --data "$ASSAY_PATH" --config config/qaqc.yml --out "$LAPORAN_DIR/$(date +%F)"
+        env:
+          ASSAY_PATH: ${{ vars.ASSAY_PATH }}
+          LAPORAN_DIR: ${{ vars.LAPORAN_DIR }}

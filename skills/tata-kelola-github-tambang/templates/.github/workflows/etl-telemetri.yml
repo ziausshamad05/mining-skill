@@ -1,0 +1,23 @@
+# ETL telemetri FMS -> KPI PA/MA/UA/EU. Berjalan di runner self-hosted dalam jaringan site.
+name: etl-telemetri
+on:
+  schedule:
+    - cron: "5 * * * *"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency: {group: etl-telemetri, cancel-in-progress: false}
+jobs:
+  etl:
+    runs-on: [self-hosted, site, operasi]
+    environment: produksi-data
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          python scripts/etl_telemetri.py \
+            --input "$FMS_EXPORT_DIR" --out "$DWH_STAGING" --jam-shift 7 --zona Asia/Makassar
+        env:
+          FMS_EXPORT_DIR: ${{ vars.FMS_EXPORT_DIR }}
+          DWH_STAGING: ${{ vars.DWH_STAGING }}
+          OPERATOR_SALT: ${{ secrets.OPERATOR_SALT }}   # untuk pseudonimisasi ID operator (UU PDP)
