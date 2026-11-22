@@ -284,7 +284,7 @@ geologi-qaqc/
 ├── reports/                       # diabaikan git; dibuat Actions sebagai artefak
 └── .github/workflows/qaqc.yml
 ```
-**Aturan QA/QC yang diotomatisasi (`templates/scripts/qaqc_assay.py`):**
+**Aturan QA/QC yang diotomatisasi (`scripts/qaqc_assay.py`):**
 | Kontrol | Aturan | Status |
 |---|---|---|
 | Blank | hasil ≤ batas (mis. 5–10 × batas deteksi) | GAGAL bila melewati |
