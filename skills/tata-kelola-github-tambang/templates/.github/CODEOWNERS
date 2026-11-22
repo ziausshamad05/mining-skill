@@ -1,0 +1,24 @@
+# CODEOWNERS — penyetuju wajib per folder (aktifkan "Require review from Code Owners" di ruleset main)
+# Urutan: aturan paling bawah yang cocok menang.
+*                               @ssu-mining/data-devops
+/.github/                       @ssu-mining/data-devops
+/kebijakan/                     @ssu-mining/manajemen
+
+# Geologi & estimasi — penyetuju akhir CPI
+/qaqc/                          @ssu-mining/eksplorasi-geologi @ssu-mining/cpi
+/estimasi/                      @ssu-mining/cpi
+/cadangan/                      @ssu-mining/cpi
+/sdc/                           @ssu-mining/cpi
+
+# Perencanaan & desain — penyetuju akhir KTT/PJO
+/perencanaan/                   @ssu-mining/mine-planning
+/desain/final/                  @ssu-mining/ktt-pjo
+/rkab/                          @ssu-mining/mine-planning @ssu-mining/ktt-pjo
+
+# Geoteknik & sistem kritis keselamatan (MOC SMKP)
+/geoteknik/                     @ssu-mining/geoteknik-survei
+/config/alarm/                  @ssu-mining/ktt-pjo @ssu-mining/geoteknik-survei
+/fms/                           @ssu-mining/produksi-maintenance @ssu-mining/ktt-pjo
+
+# GIS
+/gis/                           @ssu-mining/gis

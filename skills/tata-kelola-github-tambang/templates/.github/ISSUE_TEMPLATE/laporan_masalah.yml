@@ -1,0 +1,19 @@
+name: Laporan masalah (bug)
+description: Hasil perhitungan/skrip salah atau error
+title: "[BUG] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: gejala
+    attributes: {label: Gejala & langkah reproduksi (pakai data sintetis)}
+    validations: {required: true}
+  - type: input
+    id: versi
+    attributes: {label: Tag/commit yang dipakai}
+    validations: {required: true}
+  - type: dropdown
+    id: dampak
+    attributes:
+      label: Dampak
+      options: [Angka laporan resmi mungkin salah, Desain operasional mungkin salah, Keselamatan (segera hubungi PJO), Minor]
+    validations: {required: true}

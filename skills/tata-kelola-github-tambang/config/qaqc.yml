@@ -1,0 +1,12 @@
+# Konfigurasi QA/QC — CONTOH (data demo). Nilai CRM & ambang WAJIB diganti dan disetujui CPI.
+analit: [Ni, Co, Fe]
+satuan: {Ni: "%", Co: "%", Fe: "%"}
+batas_deteksi: {Ni: 0.01, Co: 0.001, Fe: 0.01}
+blank_kali_bd: 5
+crm:
+  CRM-DEMO-LOW:  {Ni: {nilai: 1.20, sd: 0.03}, Co: {nilai: 0.050, sd: 0.003}, Fe: {nilai: 18.0, sd: 0.40}}
+  CRM-DEMO-HIGH: {Ni: {nilai: 2.10, sd: 0.04}, Co: {nilai: 0.110, sd: 0.005}, Fe: {nilai: 25.0, sd: 0.50}}
+bias_peringatan: 0.05
+hard_ambang: {FIELD_DUP: 0.20, COARSE_DUP: 0.10, PULP_DUP: 0.10}
+hard_proporsi_lulus: 0.90
+insersi_target: {BLANK: 0.025, CRM: 0.05, DUP: 0.05}

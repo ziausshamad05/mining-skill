@@ -1,0 +1,33 @@
+name: Permintaan Analisis / Desain
+description: Analisis teknis (QA/QC, estimasi, pit, jalan, geoteknik, RKAB)
+title: "[ANALISIS] "
+labels: ["triage"]
+body:
+  - type: dropdown
+    id: disiplin
+    attributes:
+      label: Disiplin
+      options: [Geologi/QAQC, Estimasi sumber daya, Mine planning, Jalan tambang, Geoteknik, GIS, Operasi/Maintenance, RKAB]
+    validations: {required: true}
+  - type: textarea
+    id: tujuan
+    attributes: {label: Tujuan & keputusan yang didukung}
+    validations: {required: true}
+  - type: textarea
+    id: data
+    attributes:
+      label: Data yang dipakai (sistem sumber + checksum, BUKAN file mentah)
+      placeholder: "assay_2026Q3.csv di NAS/geologi, sha256: ..."
+    validations: {required: true}
+  - type: dropdown
+    id: klasifikasi
+    attributes:
+      label: Klasifikasi data
+      options: [INTERNAL, RAHASIA (data tetap di luar Git), SANGAT RAHASIA (tidak boleh diproses di repo)]
+    validations: {required: true}
+  - type: input
+    id: tenggat
+    attributes: {label: Tenggat (sebutkan jika terkait tenggat regulasi, mis. RKAB)}
+  - type: input
+    id: penyetuju
+    attributes: {label: Penyetuju akhir (CPI / KTT / PJO / Manajer)}

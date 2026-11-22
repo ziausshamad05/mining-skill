@@ -1,0 +1,28 @@
+{
+  "_sumber": "Keputusan Menteri ESDM Nomor 1827 K/30/MEM/2018, Lampiran - Tabel 1 Nilai Faktor Keamanan dan Probabilitas Longsor Lereng Tambang (hal. 57), kriteria keparahan longsor (hal. 58), ketentuan tambang permukaan (hal. 84, 91-94). Unduh: https://jdih.esdm.go.id/storage/document/Keputusan%20Menteri%20ESDM%20Nomor%201827%20K%2030%20MEM%202018.pdf",
+  "_catatan": "Bila rentang (mis. 1,15-1,2) dipakai nilai batas atas sebagai default konservatif; ubah 'pakai_batas' ke 'bawah' bila kajian mendukung. Baris lereng tunggal: PoF 25-50% -> default 25% (konservatif).",
+  "pakai_batas": "atas",
+  "tabel_fk_pof": {
+    "tunggal":     {"rendah": {"fk_statis": [1.1, 1.1], "fk_dinamis": null, "pof_maks": [0.25, 0.50]},
+                    "menengah": {"fk_statis": [1.1, 1.1], "fk_dinamis": null, "pof_maks": [0.25, 0.50]},
+                    "tinggi": {"fk_statis": [1.1, 1.1], "fk_dinamis": null, "pof_maks": [0.25, 0.50]}},
+    "inter_ramp":  {"rendah": {"fk_statis": [1.15, 1.2], "fk_dinamis": 1.0, "pof_maks": [0.25, 0.25]},
+                    "menengah": {"fk_statis": [1.2, 1.3], "fk_dinamis": 1.0, "pof_maks": [0.20, 0.20]},
+                    "tinggi": {"fk_statis": [1.2, 1.3], "fk_dinamis": 1.1, "pof_maks": [0.10, 0.10]}},
+    "keseluruhan": {"rendah": {"fk_statis": [1.2, 1.3], "fk_dinamis": 1.0, "pof_maks": [0.15, 0.20]},
+                    "menengah": {"fk_statis": [1.3, 1.3], "fk_dinamis": 1.05, "pof_maks": [0.10, 0.10]},
+                    "tinggi": {"fk_statis": [1.3, 1.5], "fk_dinamis": 1.1, "pof_maks": [0.05, 0.05]}}
+  },
+  "keparahan_longsor": {
+    "tinggi": "dapat menimbulkan kematian manusia, terhentinya produksi lebih dari 24 jam, kerusakan lingkungan berat / fasilitas utama",
+    "menengah": "cedera, gangguan produksi terbatas, kerusakan peralatan/fasilitas sedang",
+    "rendah": "tidak berdampak pada keselamatan manusia, gangguan produksi kecil"
+  },
+  "timbunan": "Lereng timbunan: FK dihitung dengan kohesi dan sudut gesek dalam residual (hal. 58). Lereng tunggal timbunan disposal 1V:2H (50%) kecuali ada kajian teknis (hal. 84 vi.d).",
+  "fasilitas_bawah_tanah": {"tetap": 2.0, "tidak_tetap": 1.5},
+  "tambang_permukaan": {
+    "tinggi_jenjang_maks": "tidak melebihi jangkauan efektif alat gali terbesar (hal. 91 xiv.xi)",
+    "peledakan_lereng_akhir": "baris lubang terakhir paling kurang 2 x tinggi jenjang tunggal dari rencana lereng akhir kecuali ada kajian (hal. 93 xvi.iii)",
+    "jarak_aman_bibir_pit_akhir_m": {"konstanta": 1.0, "persen_tinggi_lereng": 0.04, "ket": "paling kurang 1 m + 4% tinggi lereng (hal. 94 xvi.viii) [verifikasi teks asli]"}
+  }
+}
