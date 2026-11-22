@@ -78,6 +78,35 @@ DEFAULT = {
     "kapasitas_jalan_tph": None,
     "persimpangan_deg": [],
     "skala_vertikal_profil": 5.0,
+    "penampang": {"tipe": "adaptif"},
+    "geoteknik": {
+        "aktif": True, "keparahan_longsor": "tinggi", "ru": 0.2, "kh": 0.10, "n_monte_carlo": 300,
+        "status_parameter": "ASUMSI - ganti dengan hasil uji laboratorium",
+        "material_galian": {"gamma": 19.0, "c": 40.0, "phi": 30.0, "sd_c": 8.0, "sd_phi": 2.5, "sd_gamma": 0.5},
+        "material_timbunan": {"gamma": 19.0, "c": 10.0, "phi": 30.0, "sd_c": 3.0, "sd_phi": 2.0, "sd_gamma": 0.5},
+    },
+    "lembar": {
+        "kertas": "A3",
+        "skala_horizontal": 2000,
+        "skala_vertikal": 400,
+        "skala_penampang": 200,
+        "interval_label_sta_m": 100,
+        "interval_data_profil_m": 20,
+        "interval_penampang_lembar_m": 100,
+        "penampang_per_lembar": 2,
+        "overlap_m": 20,
+        "interval_grid_m": None,
+        "ortofoto": None,
+        "sistem_koordinat": "UTM Zona 51S, Datum WGS 84 (EPSG:32751)",
+        "sumber_topografi": "isi: survei/foto udara, tanggal, akurasi",
+        "nomor_gambar": "HR-01",
+        "revisi": "0",
+        "nomor_iup": "",
+        "lokasi": "",
+        "logo": None,
+        "pengesahan": [["Digambar", ""], ["Diperiksa", ""], ["Disetujui (KTT)", ""]],
+        "label_baris_profil": ["EXISTING ELEVATIONS", "PROPOSED ELEVATIONS", "STATION"],
+    },
 }
 
 
@@ -215,6 +244,7 @@ def geometri(cfg):
     emax = cfg["superelevasi_maks"]
     R_min = V ** 2 / (127 * (emax + f))
     tanggul_h = max(cfg["tanggul"]["rasio_tinggi_x_diameter"], kr["tanggul_pengaman_min_x_diameter_roda"]) * u["diameter_roda_m"]
+    tanggul_h = max(tanggul_h, cfg["tanggul"].get("tinggi_m") or 0.0)
     sep_h = kr["separator_tinggi_min_x_diameter_roda"] * u["diameter_roda_m"]
     sep_w = max(kr["separator_lebar_atas_min_x_lebar_roda"] * u["lebar_roda_m"], 0.3)
     return dict(W_lurus=W_lurus, W_formula=W_formula, W_min_kepmen=W_min_kepmen, R_min=R_min,
@@ -449,7 +479,8 @@ def penampang(cfg, geo, al, prof, terrain, s, curve_state):
     tg = cfg["tanggul"]
     sal = cfg["saluran"]
     gal, tim = cfg["galian"], cfg["timbunan"]
-    Hb = geo["tanggul_tinggi"]
+    Hb = max(geo["tanggul_tinggi"], tg.get("tinggi_m") or 0.0)
+    tipe = cfg.get("penampang", {}).get("tipe", "adaptif")
     sisi_info = {}
     for side in (+1, -1):
         o_e = side * hw[side]
@@ -460,6 +491,38 @@ def penampang(cfg, geo, al, prof, terrain, s, curve_state):
         P.append((o_s, z_s, "SHLD"))
         g_at = float(np.interp(o_s, go, gz))
         cut = g_at > z_s + 0.3
+        if tipe == "saluran_tanggul_dua_sisi":
+            P = [(o_e, z_e, "ETW")]
+            d, bw, ss = sal["dalam_m"], sal["lebar_dasar_m"], sal["kemiringan_sisi_HV"]
+            o1 = o_e + side * ss * d
+            P.append((o1, z_e - d, "DTCH_BI"))
+            o2 = o1 + side * bw
+            P.append((o2, z_e - d, "DTCH_BO"))
+            o3 = o2 + side * ss * d
+            P.append((o3, z_e, "DTCH_TO"))
+            if tg.get("bentuk", "trapesium") == "blok":
+                P.append((o3, z_e + Hb, "BERM_TI"))
+                o4 = o3 + side * tg["lebar_atas_m"]
+                P.append((o4, z_e + Hb, "BERM_TO"))
+                zs0 = z_e + Hb
+            else:
+                hs = tg["kemiringan_sisi_HV"]
+                o3b = o3 + side * hs * Hb
+                P.append((o3b, z_e + Hb, "BERM_TI"))
+                o4b = o3b + side * tg["lebar_atas_m"]
+                P.append((o4b, z_e + Hb, "BERM_TO"))
+                o4 = o4b + side * hs * Hb
+                P.append((o4, z_e, "BERM_TOE"))
+                zs0 = z_e
+            g4 = float(np.interp(o4, go, gz))
+            if g4 > zs0 + 0.05:
+                P += _path_daylight(o4, zs0, side, go, gz, True, gal["kemiringan_HV"], gal["tinggi_jenjang_m"], gal["lebar_jenjang_m"])
+                sisi_info[side] = "galian"
+            else:
+                P += _path_daylight(o4, zs0, side, go, gz, False, tim["kemiringan_HV"], tim["tinggi_jenjang_m"], tim["lebar_jenjang_m"])
+                sisi_info[side] = "timbunan"
+            pts[side] = P
+            continue
         if cut:
             # saluran
             d, bw, ss = sal["dalam_m"], sal["lebar_dasar_m"], sal["kemiringan_sisi_HV"]
@@ -496,11 +559,14 @@ def penampang(cfg, geo, al, prof, terrain, s, curve_state):
     fill_a = float(np.clip(dz, 0, None).sum() * dx)
     cut_a = float(np.clip(-dz, 0, None).sum() * dx)
     xyz = np.array([[*(xy + o * nR), z] for o, z, _ in design])
+    gz_d = np.interp(o_d, go, gz)
+    h_tim = float(max(0.0, np.max(z_d - gz_d)))
+    h_gal = float(max(0.0, np.max(gz_d - z_d)))
     m = (go >= o_d[0] - 10) & (go <= o_d[-1] + 10)
     return dict(sta=float(s), zc=zc, design=design, xyz=xyz, codes=[p[2] for p in design],
                 ground=np.column_stack([go[m], gz[m]]), cut=cut_a, fill=fill_a, xy=xy, nR=nR,
                 lebar=hw[+1] + hw[-1], slope_kiri=slope[-1], slope_kanan=slope[+1], sisi=sisi_info,
-                e=curve_state[1] * curve_state[0] if curve_state else 0.0)
+                e=curve_state[1] * curve_state[0] if curve_state else 0.0, h_timbunan=h_tim, h_galian=h_gal)
 
 
 def curve_state_at(cfg, al, s):
@@ -587,6 +653,10 @@ def run(cfg, out):
 
     # stasiun penampang: interval + titik kunci
     sts = list(np.arange(al.sta0, al.sta_end, cfg["interval_penampang_m"])) + [al.sta_end]
+    lb = cfg["lembar"]
+    sts_tabel = sorted(set([round(al.sta0, 3)] + [round(v, 3) for v in np.arange(math.ceil(al.sta0 / lb["interval_penampang_lembar_m"]) * lb["interval_penampang_lembar_m"],
+                                                                         al.sta_end, lb["interval_penampang_lembar_m"])] + [round(al.sta_end, 3)]))
+    sts += sts_tabel
     for c in al.curves:
         sts += [c["sta_pc"], (c["sta_pc"] + c["sta_pt"]) / 2, c["sta_pt"]]
     sts = sorted(set(round(s, 3) for s in sts))
@@ -609,6 +679,27 @@ def run(cfg, out):
         cum += vc - vf / shrink
         vol_rows.append(dict(sta=x["sta"], luas_galian=x["cut"], luas_timbunan=x["fill"], vol_galian=vc,
                              vol_timbunan=vf, kumulatif_massa=cum, elev_cl=x["zc"], lebar_jalur=x["lebar"]))
+
+    # tabel volume pada stasiun lembar (volume = jumlah volume halus di antaranya, lebih teliti dari 1 interval kasar)
+    tabel_vol = []
+    cf_, cc_ = 0.0, 0.0
+    prev = None
+    for T in sts_tabel:
+        i = int(np.argmin([abs(x["sta"] - T) for x in xs]))
+        if prev is None:
+            vf = vc = 0.0
+        else:
+            seg = [r for r in vol_rows if prev < r["sta"] <= T + 1e-6]
+            vf = sum(r["vol_timbunan"] for r in seg)
+            vc = sum(r["vol_galian"] for r in seg)
+        cf_ += vf
+        cc_ += vc
+        tabel_vol.append(dict(sta=T, luas_timbunan=xs[i]["fill"], luas_galian=xs[i]["cut"], vol_timbunan=vf, vol_galian=vc,
+                              kum_timbunan=cf_, kum_galian=cc_, idx=i))
+        prev = T
+
+    # ---------------- geoteknik lereng galian & timbunan (opsional, butuh skill desain-pit-geoteknik)
+    geo_lereng = evaluasi_lereng(cfg, xs)
 
     # ---------------- permukaan
     allpts = np.vstack([x["xyz"] for x in xs])
@@ -688,6 +779,13 @@ def run(cfg, out):
             "bila kurang: batasi kecepatan/pasang rambu di puncak")
     for w in al.warnings:
         add("Geometri alinyemen", w, "tangen muat", False, "Praktik rekayasa")
+    for gl in geo_lereng.get("hasil", []):
+        sy = gl["syarat"]
+        add(f"Lereng {gl['jenis']} maks (H {gl['tinggi']:.1f} m, STA {cx.fmt_sta(gl['sta'])})",
+            f"FKs {gl['fk_statis']:.2f}, FKd {gl['fk_dinamis']:.2f}, PoF {gl['pof'] * 100:.1f}%",
+            f"FKs >= {sy['fk_statis']}, FKd >= {sy['fk_dinamis']}, PoF <= {sy['pof_maks'] * 100:.0f}% (CoF {geo_lereng['cof']})",
+            gl["status"] == "MEMENUHI", "Kepmen 1827 Tabel 1 hal. 57" + (", timbunan: parameter residual hal. 58" if gl["jenis"] == "timbunan" else ""),
+            f"parameter {geo_lereng['status_parameter']}")
 
     summary = dict(
         proyek=cfg["proyek"], panjang_m=al.length, sta_awal=al.sta0, sta_akhir=al.sta_end,
@@ -697,7 +795,10 @@ def run(cfg, out):
         volume_perkerasan_m3=al.length * geo["W_lurus"] * cfg["lapis_perkerasan"]["tebal_m"],
         tikungan=[{k: v for k, v in c.items() if k != "elem"} for c in al.curves],
         pvi=[dict(sta=s, elev=z, L=L) for s, z, L in prof.pvis], grade_pct=[g * 100 for g in grades],
-        lengkung_vertikal=vinfo["lengkung"], drainase=dr, perkerasan=tp, pemeriksaan=chk,
+        lengkung_vertikal=vinfo["lengkung"], drainase=dr, perkerasan=tp, pemeriksaan=chk, geoteknik=geo_lereng,
+        tabel_volume=[{k: v for k, v in r.items() if k != "idx"} for r in tabel_vol],
+        h_timbunan_maks=max(x["h_timbunan"] for x in xs), h_galian_maks=max(x["h_galian"] for x in xs),
+        jarak_pandang=vinfo, geometri=geo,
         lolos_semua=all(c["status"] == "MEMENUHI" for c in chk),
     )
 
@@ -755,18 +856,53 @@ def run(cfg, out):
     cx.write_obj(os.path.join(out, "komposit.obj"), cp_pts, cp_tris, "komposit", origin)
 
     import sheets_jalan
-    sheets_jalan.render(cfg, al, prof, eg_prof, xs, vol_rows, summary, eg_pts, eg_tris, cp_pts, cp_tris, allpts, ctris,
-                        os.path.join(out, "lembar_gambar.pdf"), out)
+    daftar_lembar = sheets_jalan.render(cfg, al, prof, eg_prof, xs, vol_rows, tabel_vol, summary, eg_pts, eg_tris, cp_pts, cp_tris,
+                                        allpts, ctris, terrain, os.path.join(out, "gambar_perencanaan_jalan.pdf"), out)
+    summary["daftar_lembar"] = daftar_lembar
     with open(os.path.join(out, "laporan.json"), "w") as f:
-        json.dump(summary, f, indent=2, default=float)
-    _laporan_md(cfg, summary, os.path.join(out, "laporan.md"))
+        json.dump(summary, f, indent=2, default=lambda o: float(o) if isinstance(o, (np.floating, np.integer)) else str(o))
+    import laporan_jalan
+    summary["berkas_laporan"] = laporan_jalan.tulis(cfg, summary, out)
     return summary
+
+
+def evaluasi_lereng(cfg, xs):
+    """FK & PoF lereng galian/timbunan tertinggi memakai geotek.py (skill desain-pit-geoteknik)."""
+    g = cfg.get("geoteknik") or {}
+    if not g.get("aktif", True):
+        return {"aktif": False}
+    gp = os.path.join(HERE, "..", "..", "desain-pit-geoteknik", "scripts")
+    if not os.path.exists(os.path.join(gp, "geotek.py")):
+        return {"aktif": False, "catatan": "geotek.py tidak ditemukan (pasang skill desain-pit-geoteknik)"}
+    sys.path.insert(0, gp)
+    import geotek as gt
+
+    hasil = []
+    for jenis, key, mk in (("galian", "h_galian", "material_galian"), ("timbunan", "h_timbunan", "material_timbunan")):
+        x = max(xs, key=lambda r: r[key])
+        H = x[key]
+        if H < 1.0:
+            continue
+        p = cfg["galian"] if jenis == "galian" else cfg["timbunan"]
+        hb = p["tinggi_jenjang_m"] or H
+        n = max(1, int(math.ceil(H / hb)))
+        hb = H / n
+        muka = math.degrees(math.atan(1.0 / p["kemiringan_HV"]))
+        mat = gt.Material.from_dict(g[mk])
+        ev = gt.evaluasi(dict(tinggi_jenjang=hb, sudut_muka=muka, lebar_berm=p["lebar_jenjang_m"], jumlah_jenjang=n,
+                              jenjang_per_inter_ramp=n), mat, g["keparahan_longsor"], g["ru"], g["kh"], g["n_monte_carlo"])
+        v = ev["keseluruhan"]
+        hasil.append(dict(jenis=jenis, sta=x["sta"], tinggi=H, sudut=v["sudut"], fk_statis=v["fk_statis"],
+                          fk_dinamis=v["fk_dinamis"] or 0.0, pof=v["pof"], syarat=v["syarat"], status=v["status"],
+                          lingkaran=v["lingkaran"], xz=v["xz"], muka=muka, n=n, tinggi_jenjang=hb))
+    return dict(aktif=True, cof=g["keparahan_longsor"], ru=g["ru"], kh=g["kh"], status_parameter=g["status_parameter"],
+                material_galian=g["material_galian"], material_timbunan=g["material_timbunan"], hasil=hasil)
 
 
 def _feature_lines(xs):
     """Sambungkan titik berkode sama antar penampang menjadi feature line 3D (putus bila kode hilang)."""
     lines = {}
-    keys = ["CL", "ETW", "SHLD", "BERM_TI", "BERM_TO", "BERM_TOE", "DTCH_BI", "DTCH_BO", "DAYL"]
+    keys = ["CL", "ETW", "SHLD", "BERM_TI", "BERM_TO", "BERM_TOE", "DTCH_BI", "DTCH_BO", "DTCH_TO", "DAYL"]
     for code in keys:
         for side in ("L", "R"):
             if code == "CL" and side == "R":
@@ -794,7 +930,7 @@ def _feature_lines(xs):
 
 
 LAYER_OF = {"CL": "C-ROAD-CNTR", "ETW": "C-ROAD-EDGE", "SHLD": "C-ROAD-SHLD", "BERM_TI": "C-ROAD-BERM", "BERM_TO": "C-ROAD-BERM",
-            "BERM_TOE": "C-ROAD-BERM", "DTCH_BI": "C-ROAD-DTCH", "DTCH_BO": "C-ROAD-DTCH", "DAYL": "C-ROAD-DAYL"}
+            "BERM_TOE": "C-ROAD-BERM", "DTCH_BI": "C-ROAD-DTCH", "DTCH_BO": "C-ROAD-DTCH", "DTCH_TO": "C-ROAD-DTCH", "DAYL": "C-ROAD-DAYL"}
 
 
 def _dxf_plan(cfg, al, xs, terrain, eg_pts, eg_tris, cp_pts, cp_tris, path):
@@ -865,8 +1001,10 @@ def _dxf_profil(cfg, al, prof, eg_prof, path):
         zg = float(np.interp(st, s, zeg)); zf = float(prof.z(st)[0])
         d.text(f"{zg:.2f}", (P(st, datum)[0], P(st, datum)[1] - 12), 2.0, "C-PROF-TEXT", rot=90)
         d.text(f"{zf:.2f}", (P(st, datum)[0], P(st, datum)[1] - 22), 2.0, "C-PROF-TEXT", rot=90)
-    d.text("ELEV EG", (P(al.sta0, datum)[0] - 20, P(al.sta0, datum)[1] - 12), 2.2, "C-PROF-TEXT")
-    d.text("ELEV FG", (P(al.sta0, datum)[0] - 20, P(al.sta0, datum)[1] - 22), 2.2, "C-PROF-TEXT")
+    lab = cfg["lembar"]["label_baris_profil"]
+    d.text(lab[0], (P(al.sta0, datum)[0] - 30, P(al.sta0, datum)[1] - 12), 2.2, "C-PROF-TEXT")
+    d.text(lab[1], (P(al.sta0, datum)[0] - 30, P(al.sta0, datum)[1] - 22), 2.2, "C-PROF-TEXT")
+    d.text(lab[2], (P(al.sta0, datum)[0] - 30, P(al.sta0, datum)[1] - 6), 2.2, "C-PROF-TEXT")
     d.poly2d([P(a, b) for a, b in zip(s, zeg)], "C-PROF-EG")
     d.poly2d([P(a, b) for a, b in zip(sf, zfg)], "C-PROF-FG")
     g = prof.grades()
@@ -908,33 +1046,6 @@ def _dxf_penampang(xs, path, ncol=4):
         d.text(f"STA {cx.fmt_sta(x['sta'])}  CL EL {x['zc']:.2f}", (ox + cw / 2, oy + ch - 3), 2.2, "C-SECT-TEXT")
         d.text(f"G={x['cut']:.1f} m2  T={x['fill']:.1f} m2", (ox + cw / 2, oy + 3), 1.8, "C-SECT-TEXT")
     d.save(path)
-
-
-def _laporan_md(cfg, s, path):
-    L = [f"# Laporan Desain Jalan Tambang - {cfg['proyek']}", "",
-         f"Dasar: Kepmen ESDM 1827 K/30/MEM/2018 (hal. 66-67, 99-100) + praktik rekayasa AASHTO / Kaufman & Ault.", "",
-         "## Ringkasan", "",
-         f"- Panjang alinyemen: **{s['panjang_m']:.1f} m** (STA {cx.fmt_sta(s['sta_awal'])} - {cx.fmt_sta(s['sta_akhir'])})",
-         f"- Unit terbesar: {cfg['unit_terbesar']['nama']} (lebar {cfg['unit_terbesar']['lebar_m']} m, D roda {cfg['unit_terbesar']['diameter_roda_m']} m)",
-         f"- Lebar jalur lurus: **{s['lebar_lurus_m']:.2f} m**; radius minimum {s['R_min_m']:.1f} m @ {cfg['kecepatan_rencana_kmh']:.0f} km/j",
-         f"- Tinggi tanggul pengaman: **{s['tanggul_tinggi_m']:.2f} m**",
-         f"- Grade maksimum terdesain: **{s['grade_maks_pct']:.2f}%**; jarak pandang henti {s['jarak_pandang_henti_m']:.0f} m",
-         f"- Volume galian {s['volume_galian_m3']:,.0f} m3 (TIN {s['volume_galian_tin_m3']:,.0f}); timbunan {s['volume_timbunan_m3']:,.0f} m3 (TIN {s['volume_timbunan_tin_m3']:,.0f}); perkerasan {s['volume_perkerasan_m3']:,.0f} m3",
-         "", "## Pemeriksaan kepatuhan", "", "| No | Item | Nilai desain | Syarat | Status | Dasar |", "|---|---|---|---|---|---|"]
-    for i, c in enumerate(s["pemeriksaan"], 1):
-        L.append(f"| {i} | {c['item']} | {c['nilai']} | {c['syarat']} | {c['status']} | {c['dasar']} |")
-    L += ["", "## Tikungan", "", "| PI | Arah | R (m) | Delta (deg) | T (m) | L (m) | e | W (m) | STA PC | STA PT |", "|---|---|---|---|---|---|---|---|---|---|"]
-    for c in s["tikungan"]:
-        L.append(f"| {c['pi_no']} | {c['arah']} | {c['radius']:.0f} | {c['delta_deg']:.2f} | {c['T']:.2f} | {c['L']:.2f} | {c.get('e', 0) * 100:.1f}% | {c.get('W', 0):.2f} | {cx.fmt_sta(c['sta_pc'])} | {cx.fmt_sta(c['sta_pt'])} |")
-    L += ["", "## PVI", "", "| STA | Elev | L lengkung (m) |", "|---|---|---|"]
-    for p in s["pvi"]:
-        L.append(f"| {cx.fmt_sta(p['sta'])} | {p['elev']:.2f} | {p['L']:.0f} |")
-    L += ["", "## Catatan", "",
-          "- Kepmen 1827 tidak memberi angka radius, superelevasi, jarak pandang, dan dimensi saluran; nilai tersebut dihitung dari kecepatan rencana dan spesifikasi unit.",
-          "- Hasil ini desain teknis awal. Wajib diverifikasi dengan data topografi aktual, uji CBR/DCP, kajian geoteknik lereng galian/timbunan, dan disahkan KTT.",
-          "- Impor `jalan.xml` ke Civil 3D: Insert > LandXML (alignment, profil, surface). DXF bisa dibuka di AutoCAD/Civil 3D/Minescape/Surpac/QGIS."]
-    with open(path, "w") as f:
-        f.write("\n".join(L) + "\n")
 
 
 def main(argv=None):
