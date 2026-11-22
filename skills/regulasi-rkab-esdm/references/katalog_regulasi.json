@@ -1,0 +1,158 @@
+{
+  "diperbarui": "2026-11-22",
+  "catatan": "Katalog awal. Status dan ID BPK diverifikasi dari peraturan.bpk.go.id per tanggal di atas. Selalu jalankan `jdih_fetch.py detail <bpk_id>` untuk status terbaru sebelum dikutip.",
+  "regulasi": [
+    {
+      "kode": "permen-esdm-17-2025",
+      "judul": "Permen ESDM No. 17 Tahun 2025 tentang Tata Cara Penyusunan, Penyampaian, dan Persetujuan RKAB serta Tata Cara Pelaporan Pelaksanaan Kegiatan Usaha Pertambangan Mineral dan Batubara",
+      "topik": [
+        "rkab",
+        "minerba",
+        "pelaporan",
+        "minerbaone"
+      ],
+      "ditetapkan": "2025-09-30",
+      "diundangkan": "2025-10-03",
+      "sumber_bn": "BN.2025(743) 21 hlm",
+      "status": "Berlaku, diubah dengan Permen ESDM 6/2026",
+      "mencabut": [
+        "Permen ESDM 10/2023",
+        "Permen ESDM 15/2024 (perubahan Permen 10/2023)"
+      ],
+      "bpk_details_id": "350283",
+      "bpk_url": "https://peraturan.bpk.go.id/Details/350283/permen-esdm-no-17-tahun-2025",
+      "pdf_cermin": "https://www.peraturan.go.id/files/permen-esdm-no-17-tahun-2025.pdf"
+    },
+    {
+      "kode": "permen-esdm-6-2026",
+      "judul": "Permen ESDM No. 6 Tahun 2026 tentang Perubahan atas Permen ESDM No. 17 Tahun 2025",
+      "topik": [
+        "rkab",
+        "minerba",
+        "pencampuran batubara",
+        "blending",
+        "laporan triwulan"
+      ],
+      "ditetapkan": "2026-06-08",
+      "diundangkan": "2026-06-12",
+      "sumber_bn": "BN.2026(384) 8 hlm",
+      "status": "Berlaku",
+      "pokok_perubahan": [
+        "Pasal 19: cakupan laporan berkala triwulanan diperluas, termasuk pelaksanaan pencampuran batubara bagi pemegang persetujuan pencampuran",
+        "Pasal 33: perbaikan administrasi atas kesalahan prosedur/kekeliruan penilaian dalam persetujuan/penolakan RKAB",
+        "Pasal 34A: pencampuran batubara wajib persetujuan Menteri, dengan dokumen pendukung (persetujuan RKAB batubara induk & pencampur, kontrak beli pencampur, kontrak jual hasil campuran, uji kualitas surveyor terdaftar)",
+        "Pasal 34B: pedoman permohonan, evaluasi, dan persetujuan pencampuran ditetapkan dengan Keputusan Menteri"
+      ],
+      "bpk_details_id": "350280",
+      "bpk_url": "https://peraturan.bpk.go.id/Details/350280/permen-esdm-no-6-tahun-2026",
+      "pdf_cermin_kandidat": "https://www.peraturan.go.id/files/permen-esdm-no-6-tahun-2026.pdf"
+    },
+    {
+      "kode": "kepmen-esdm-341-2025",
+      "judul": "Kepmen ESDM No. 341.K/MB.01/MEM.B/2025 tentang pedoman pelaksanaan penyusunan, evaluasi, dan persetujuan RKAB (format & matriks)",
+      "topik": [
+        "rkab",
+        "matriks",
+        "format",
+        "evaluasi"
+      ],
+      "berlaku": "2025-10-14",
+      "status": "Berlaku (verifikasi perubahan terbaru)",
+      "catatan": "Kepmen umumnya tidak ada di BPK; cari di JDIH ESDM / laman Ditjen Minerba.",
+      "bpk_details_id": null
+    },
+    {
+      "kode": "permen-esdm-18-2025",
+      "judul": "Permen ESDM No. 18 Tahun 2025 tentang Peraturan Pelaksanaan PP 39/2025 (Perubahan Kedua PP 96/2021)",
+      "topik": [
+        "minerba",
+        "pelaksanaan kegiatan usaha",
+        "pp 39/2025"
+      ],
+      "ditetapkan": "2025-11-14",
+      "diundangkan": "2025-11-18",
+      "sumber_bn": "BN.2025(944) 95 hlm",
+      "status": "Berlaku",
+      "bpk_details_id": "351154",
+      "bpk_url": "https://peraturan.bpk.go.id/Details/351154/permen-esdm-no-18-tahun-2025"
+    },
+    {
+      "kode": "pp-39-2025",
+      "judul": "PP No. 39 Tahun 2025 tentang Perubahan Kedua atas PP No. 96 Tahun 2021 tentang Pelaksanaan Kegiatan Usaha Pertambangan Mineral dan Batubara",
+      "topik": [
+        "minerba",
+        "pp 96/2021"
+      ],
+      "status": "Berlaku (cari ID BPK dengan `search`)",
+      "pdf_cermin_kandidat": "https://peraturan.go.id/files/pp-no-39-tahun-2025.pdf"
+    },
+    {
+      "kode": "uu-4-2009-jo-uu-2-2025",
+      "judul": "UU No. 4 Tahun 2009 tentang Pertambangan Mineral dan Batubara, terakhir diubah UU No. 2 Tahun 2025 (Perubahan Keempat)",
+      "topik": [
+        "minerba",
+        "undang-undang"
+      ],
+      "status": "Berlaku"
+    },
+    {
+      "kode": "se-dirjen-2e-2025",
+      "judul": "SE Dirjen Minerba No. 2.E/HK.03/DJB/2025 tentang RKAB 2026 (31 Des 2025) - ketentuan transisi kegiatan sambil menunggu persetujuan penyesuaian RKAB 2026",
+      "topik": [
+        "rkab",
+        "transisi",
+        "surat edaran"
+      ],
+      "status": "Transisi tahun 2026 - verifikasi apakah masih relevan",
+      "bpk_details_id": null
+    },
+    {
+      "kode": "permen-esdm-26-2018",
+      "judul": "Permen ESDM No. 26 Tahun 2018 tentang Pelaksanaan Kaidah Pertambangan yang Baik dan Pengawasan Pertambangan Minerba (KTT, pengawas operasional)",
+      "topik": [
+        "ktt",
+        "k3",
+        "pengawas operasional",
+        "kompetensi"
+      ],
+      "status": "Verifikasi status & perubahan via `search`"
+    },
+    {
+      "kode": "pp-7-2017",
+      "judul": "PP No. 7 Tahun 2017 tentang Panas Bumi untuk Pemanfaatan Tidak Langsung (definisi RKAB panas bumi)",
+      "topik": [
+        "panas bumi",
+        "rkab",
+        "ipb"
+      ],
+      "status": "Verifikasi status via `search`",
+      "pdf_cermin": "https://peraturan.go.id/files/pp7-2017bt.pdf"
+    },
+    {
+      "kode": "permen-esdm-7-2026",
+      "judul": "Permen ESDM No. 7 Tahun 2026 (standar kegiatan usaha & produk perizinan berbasis risiko sektor ESDM; mencabut Permen ESDM 5/2021)",
+      "topik": [
+        "perizinan berbasis risiko",
+        "panas bumi",
+        "standar usaha"
+      ],
+      "ditetapkan": "2026-06-08",
+      "diundangkan": "2026-06-12",
+      "sumber_bn": "BN.2026(385) 324 hlm",
+      "status": "Berlaku",
+      "bpk_details_id": null,
+      "catatan": "Cari ID BPK dengan `search --nomor 7 --tahun 2026`."
+    },
+    {
+      "kode": "permen-esdm-23-2017",
+      "judul": "Permen ESDM No. 23 Tahun 2017 - rencana tahunan produksi uap/listrik PLTP & Bonus Produksi panas bumi",
+      "topik": [
+        "panas bumi",
+        "bonus produksi",
+        "rencana tahunan"
+      ],
+      "status": "Verifikasi status via `search`",
+      "pdf_cermin": "https://jdih.esdm.go.id/storage/document/Permen%20ESDM%20Nomor%2023%20Thn%202017.pdf"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+kunci,nilai,keterangan
+# --- Identitas ---,,
+nama_perusahaan,PT Contoh Tambang,
+tahun_rkab,2027,Tahun pelaksanaan RKAB (bukan tahun pengajuan)
+tahap,operasi produksi,eksplorasi | operasi produksi
+komoditas,nikel,batubara | nikel | bauksit | emas | batuan | dll
+# --- A. Prasyarat Pasal 5 (ya/tidak) ---,,
+izin_aktif_oss,ya,IUP/IUPK aktif & data administratif terintegrasi OSS
+pnbp_lunas,ya,Bukti pelunasan PNBP (iuran tetap + royalti)
+peta_digital,ya,Shapefile realisasi & rencana
+jamrek_ditempatkan,ya,OP: Jamrek 1 tahun sebelum tahun permohonan
+ktt_disahkan,ya,KTT definitif/sementara
+laporan_sdc_cp,ya,Laporan SDC ditandatangani Competent Person (khusus OP)
+fs_disetujui,ya,Persetujuan Studi Kelayakan (khusus OP)
+dokumen_lingkungan_berlaku,ya,AMDAL/UKL-UPL (khusus OP)
+dalam_kawasan_hutan,tidak,ya bila WIUP tumpang tindih kawasan hutan
+ppkh_ada,,wajib diisi bila dalam_kawasan_hutan=ya
+kswp_valid,ya,status konfirmasi wajib pajak
+# --- B/C. Produksi & penjualan (ton) ---,,
+produksi_rencana_ton,1.500.000,
+kapasitas_fs_ton,2.000.000,
+kapasitas_dokumen_lingkungan_ton,2.000.000,
+stok_awal_ton,50.000,
+penjualan_domestik_ton,1.450.000,
+penjualan_ekspor_ton,0,
+dmo_persen_wajib,,isi untuk batubara sesuai Kepmen DMO berlaku
+# --- E. Keuangan (Rupiah) ---,,
+total_biaya_matriks_keuangan,410.000.000.000,
+biaya_eksplorasi,5.000.000.000,
+biaya_konstruksi,20.000.000.000,
+biaya_penambangan,250.000.000.000,
+biaya_pengolahan_pemurnian,0,
+biaya_pengangkutan_penjualan,80.000.000.000,
+biaya_k3_ko,8.000.000.000,
+biaya_lingkungan_reklamasi,15.000.000.000,
+biaya_pascatambang,2.000.000.000,
+biaya_ppm,6.000.000.000,
+biaya_tenaga_kerja,18.000.000.000,
+biaya_umum_administrasi,6.000.000.000,
+toleransi_selisih_persen,0.5,
+# --- F. Status matriks di MinerbaOne (sudah diisi/belum) ---,,
+matriks_eksplorasi_sdc,sudah diisi,
+matriks_konstruksi,sudah diisi,
+matriks_produksi_pengolahan,sudah diisi,
+matriks_pemasaran_penjualan,sudah diisi,
+matriks_k3_ko,sudah diisi,
+matriks_lingkungan_reklamasi,sudah diisi,
+matriks_ppm,sudah diisi,
+matriks_tenaga_kerja_tkdn,sudah diisi,
+matriks_keuangan,sudah diisi,
